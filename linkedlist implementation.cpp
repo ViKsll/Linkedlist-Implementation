@@ -15,6 +15,10 @@ public:
 	int GetSize() { return Size; }
 
 	T& operator[](const int index); // to get a access to one of the elements
+	void push_front(T data); // add a new element to the beginning of the List                
+	void insert(T data, int index); // inserting element in the middle of List                                                                           
+	void removeAt(int index); // deleting element at the specified index                     
+	void pop_back(); // deleting last element                          
 
 private:
 
@@ -102,6 +106,60 @@ T& List<T>::operator[](const int index)
 	}
 }
 
+template<typename T>
+void List<T>::push_front(T data) // implementation of push_front method                                        
+{
+	head = new Node<T>(data, head); // creating new element to the beggining of List and adding data                
+	Size++; // increase size of the List
+}
+
+template<typename T>
+void List<T>::insert(T data, int index) // implementation of insert method                                       
+{
+	if (index == 0)
+	{
+		push_front(data);
+	}
+	else
+	{
+		Node<T>* previous = this->head; // creating temporary pointer(previous) and assign "head" to it
+		for (int i = 0; i < index - 1; i++) // finding previous element of index 
+		{
+			previous = previous->pNext; // then assign the address of next element to a new previous element
+		}
+		Node<T>* newNode = new Node<T>(data, previous->pNext); // creating new element and passing data to the constructor
+		previous->pNext = newNode; // the address of the next element is added to our new current element
+		Size++;
+	}
+}
+
+template<typename T>
+void List<T>::removeAt(int index)                                                                              
+{
+	if (index == 0)
+	{
+		pop_front();
+	}
+	else
+	{
+		Node<T>* previous = this->head; 
+		for (int i = 0; i < index - 1; i++) 
+		{
+			previous = previous->pNext; // finding previous element and assign the adress of the next element
+		}
+		Node<T>* toDelete = previous->pNext; // creating temporary pointer(toDelete) and assign address of our old element that pointed to the next element
+		previous->pNext = toDelete->pNext; // then adress of previous element points to the next element(exclusing element that has to be removed)
+		delete toDelete;
+		Size--;
+	}
+}
+
+template<typename T>
+void List<T>::pop_back()                                                                    
+{
+	remove(Size - 1);
+}
+
 int main()
 {
 	List<int> lst;
@@ -131,6 +189,18 @@ int main()
 	{
 		cout << lst[i] << endl;
 	}
+	
+	lst.push_front(11); // now 11 will be first number in the List                                                      
+	cout << lst.GetSize() << endl; 
+
+	lst.insert(99, 2); // adding element 99 as the third number in the List                                             
+	cout << lst.GetSize() << endl;
+
+	lst.removeAt(1); // deleting second element                                                                         
+	cout << lst.GetSize() << endl;
+
+	lst.pop_back(); // removed the last element                                                                          
+	cout << lst.GetSize() << endl;
 	
 	lst.clear(); // clear data from dynamic memory. not necessary use it here since we added this to destructor
 	cout << lst.GetSize() << endl;
