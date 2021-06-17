@@ -8,8 +8,10 @@ class List
 public:
 	List();
 	~List();
-
+	
+        void pop_front();  // delete first element
 	void push_back(T data);
+	void clear(); // remove data from List
 	int GetSize() { return Size; }
 
 	T& operator[](const int index); // to get a access to one of the elements
@@ -43,7 +45,16 @@ List<T>::List()
 template<typename T>
 List<T>::~List()
 {
+    clear(); // remove data from List
+}
 
+template<typename T> // implementation of pop_front method
+List<T>::pop_front()
+{
+	Node<T> *temp = head; // assign the very first element(head) to temporary variable
+	head = head->pNext; // assign the very first element(head) to the second element
+	delete temp; // delete the very first element(head)
+	Size--; // now we have one less element
 }
 
 template<typename T>
@@ -64,6 +75,15 @@ void List<T>::push_back(T data) // adding a new element at the end of the List
 		current->pNext = new Node<T>(data); // assign a new element instead of nullptr
 	}
 	Size++;
+}
+
+template<typename T> 
+void List<T>::clear() // implementation of clear() method
+{
+	while (Size) // while Size > 0 we use while loop until we delete all the elements from List
+	{
+		pop_front();
+	}
 }
 
 template<typename T>
@@ -111,6 +131,9 @@ int main()
 	{
 		cout << lst[i] << endl;
 	}
+	
+	lst.clear(); // clear data from dynamic memory. not necessary use it here since we added this to destructor
+	cout << lst.GetSize() << endl;
 
 	return 0;
 }
